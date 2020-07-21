@@ -51,6 +51,9 @@ class Parser(object):
         sentences: List[str] = self.run()
         return ' '.join([sentence.strip() for sentence in sentences]).strip()
 
+@app.route('/', methods=['GET'])
+def hello_world():
+    return 'Hello, World!'
 
 @app.route('/summarize', methods=['POST'])
 def convert_raw_text():
@@ -81,7 +84,7 @@ if __name__ == '__main__':
     parser.add_argument('-greediness', dest='greediness', help='', default=0.45)
     parser.add_argument('-reduce', dest='reduce', help='', default='mean')
     parser.add_argument('-hidden', dest='hidden', help='', default=-2)
-    parser.add_argument('-port', dest='port', help='', default=5000)
+    parser.add_argument('-port', dest='port', help='', default=8080)
     parser.add_argument('-host', dest='host', help='', default='0.0.0.0')
 
     args = parser.parse_args()
