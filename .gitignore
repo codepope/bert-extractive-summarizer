@@ -133,5 +133,5 @@ share
 _build
 _static
 _templates
-.now
-.vercel
+
+fly.toml
