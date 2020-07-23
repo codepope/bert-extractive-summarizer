@@ -12,211 +12,94 @@ the neuralcoref library can be tweaked in the CoreferenceHandler class.
 
 Paper: https://arxiv.org/abs/1906.04165
 
-### Try the Online Demo:
+## Rest of the original readme
 
-[Distill Bert Summarization Demo](https://smrzr.io)
+This is fork of (dmmiller612/bert-extractive-summarizer)
+[https://github.com/dmmiller612/bert-extractive-summarizer], the original readme can be read in the main repo.
 
-## Install
+## Aim of this fork
 
-```bash
-pip install bert-extractive-summarizer
-```
+I am not a Machine Learning (ML) enthusiast yet :), so as the original repo had a docker file I wanted to do a quick deploy it on a service and get some text summaries working. For that I have chosen [Fly.io](https://fly.io) which deploys apps closer to the user so that it responds much faster.
 
-#### Coreference functionality with neuralcoref requires a spaCy model, which has to be downloaded separately.
- 
-The default model is small English spaCy model (en_core_web_sm, 11Mb) and is installed automaticaly with this package. To use other model you'll have to install it manually.
+## Running this summarizer API on Fly.io
 
-Example: installing medium (91 Mb) English model (for more models see [spaCy documentation](https://spacy.io/usage/models)). 
-```bash
-pip install spacy==2.1.3
-pip install transformers==2.2.2
-pip install neuralcoref
+Fly.io has great [docs](https://fly.io/docs/) so please have a look. You can run this text summarizer on fly.io with the following steps:
 
-python -m spacy download en_core_web_md
-```
+1. [Install](https://fly.io/docs/getting-started/installing-flyctl/) the flyctl CLI command
+1. Register on fly with `flyctl auth signup` , if you already have a fly account login with `flyctl auth login`
+1. Clone this repo with `git@github.com:geshan/bert-extractive-summarizer.git`
+1. Then run `cd bert-extractive-summarizer`
+1. Now the fun begins, execute `flyctl init`
+1. Then type in a name for example: `text-summarizer`, if it is taken try a different name re-running `flyctl init`.
+1. Subsequently select the org, generally it will be your firstname-lastname
+1. After that, select `Dockerfile` as the builder
+1. It should create a fly.toml file at the project root now. Here is a screenshot of my output:
+    ![Flyctl init output for bert-executive-summarizer](imgs/01fly-init.png?raw=true)
+1. Lets get a bit more into it, run `flyctl deploy --dockerfile Dockerfile.service` -- probably time to make a coffee now as pulling the docker [image](https://hub.docker.com/r/geshan/bert-extractive-summarizer) (which is 3.5 GB), building it a bit more and pushing it to fly container registry then deploying it is going to take some time. Here is a screenshot of the deploy output:
+    ![Flyctl deploy output for bert-executive-summarizer](imgs/02fly-deploy.png?raw=true)
+1. 1 instance is unhealthy, and that is expected as of now. It is happening because of low resources (512 MB memory).
+1. Then you can try `flyctl info` to see the info, and try `flyctl status` to see if it is running. My experience was the default 512 MB memory was not enough.
+    ![Flyctl info and status output for bert-executive-summarizer](imgs/03fly-info.png?raw=true)
+1. This is where it gets more interesing, now the resources have to be beefed up to make it run. Lets see what is allocated by default, to do it run `flyctl scale show` and what VM options are available with `flyctl platform vm-sizes`
+    ![Flyctl scale and vm sizes output for bert-executive-summarizer](imgs/04fly-scale-show.png?raw=true)
+1. To use a more powerful VM with 2 GB memory and 2 CPU run this command `flyctl scale vm cpu2mem2`, at least a 2 GB memory was required from my experience
+    ![Flyctl scale vm output for bert-executive-summarizer](imgs/05fly-scale-vm.png?raw=true)
+1. After like 1 minute try `flyctl status` to see if it is running with a 2 GB memory instance, something like below should be visible:
+    ![Flyctl status output for bert-executive-summarizer](imgs/06fly-status.png?raw=true)
+1. Now lets do `flyctl open` to see if it is running. The browser shows `Hello World!` now which is a good sign.
+1. To try out a summarization run the following Curl, replace the URL with your service's URL:
+    ````
+    curl -X POST -H "Content-Type: text/plain" \
+    --data "Fly is a platform for applications that need to run globally. \
+    It runs your code close to users and scales compute in cities where your app is busiest. Write your code, package \
+    it into a Docker image, deploy it to Fly's platform and let that do all the work to keep your app snappy. You can go \
+    hands-on for free and launch a container on Fly or read on. What's the Idea Behind Fly? Your need to reduce latency \
+    to deliver your applications as fast as physics is our business. The old solution of globally duplicating resources \
+    in every datacenter near where customers are isn't sustainable. Being location smart, agile over time and clever with \
+    the cloud allows us to build a deployment platform that lets you reap the benefits of lower latency for your users \
+    wherever they are. What Fly Does Modern applications get packaged into containers and can carry with them all the \
+    code needed for them to operate. But, more often than not, they are deployed into specific datacenters, never to \
+    be moved. This is nothing like a container in the real world. Real containers are built to be transported where \
+    there's demand for them. With Fly.io, we're more like those real containers, moving around the world to where the \
+    demand is. Location-Smart Think of a world where your application appears in the location where it is needed. \
+    When a user connects to a Fly application, the system determines the nearest location for the lowest latency \
+    and starts the application there. And with automatic scaling, as more connections appear, the application is \
+    right sized for demand by creating new instances at that location. Agile over Time One of the best indications \
+    of demand is time, specifically the time of day - demand increases during the day when people work, and diminishes \
+    overnight. With Fly, our default is to use that information and let your applications follow the sun, relocating \
+    to where the clock shows the day beginning and being ready for the day's demand. If your users behave differently, \
+    you can change this behavior and set your own schedules. Clever with the Cloud Fly isn't just the simplest way to \
+    create and scale instances in datacenters around the globe. It's also the smartest way to do it. When your users \
+    connect to a Fly application, we analyze other nearby locations. If it's quicker to route their request transparently \
+    to a nearby instance that's already running, we do just that. Data travels between Fly datacenter locations over \
+    an encrypted backhaul running on fast connections. How Fly Works For… For Developers You can run most \
+    applications with a Dockerfile using the flyctl command. The first time you deploy an app, we assign it a \
+    global IP address. By default, apps listen for HTTP and HTTPS connections, though they can be configured \
+    to accept any kind of TCP traffic. When users connect to your global IPs, we dynamically assign compute \
+    resources in datacenters closest to them. More users might create demand for more resources in multiple \
+    locations worldwide, while low-traffic applications may only require a small amount of resources in a \
+    single location. For Operations Fly makes application deployment simple. Global availability and global \
+    IP addresses put your applications anywhere with a single command. Automatically generated TLS certficates \
+    help secure your applications. And once your application is deployed, Fly keeps your performance up by \
+    sending users on the shortest, fastest path to where your application is running. Why Fly? Compare those \
+    Fly features with a traditional non-Fly global cloud. There you create instances of your application at \
+    every location where you want low latency. Then, as demand grows, you'll end up scaling-up each location \
+    because scaling down is tricky and would involve a lot of automation. The likelihood is that you'll end \
+    up paying 24/7 for that scaled-up cloud version. Repeat that at every location and it’s a lot to pay for. \
+    Why are we Making Fly? Despite the benefits of location-smart, time-agile and cloud-clever applications, \
+    there’s been no good platform for building applications that work like this. This is what Fly has set out \
+    to fix. In the process we want to make application distribution platforms as ubiquitous as CDNs." \
+    https://text-summarizer.fly.dev/summarize\?ratio\=0.1
+    ````
+1. You should get an output like below:
+    ````
+    {"summary":"Fly is a platform for applications that need to run globally. Being location smart, agile over time and clever with the cloud allows us to build a deployment platform that lets you reap the benefits of lower latency for your users wherever they are. This is nothing like a container in the real world. There you create instances of your application at every location where you want low latency. Then, as demand grows, you'll end up scaling-up each location because scaling down is tricky and would involve a lot of automation."}
+    ````
+1. So we just summarized the fly.io main doc page content to 10% (0.1 ratio) with the BERT based summarizer.
+1. Hope you liked it!
 
-## How to Use
+## Endless Possibilites
 
-As of version 0.4.2, by default, CUDA is used if a gpu is available.
+The possibilities for this text summarizer are endless, you could potentlially build a news summarizer app that takes all the COVID-19 news and gives out a concise digest to your readers. Everyone doesn't like reading long texts so summarizing it to 10% or 20% will save a lot of time.
 
-#### Simple Example
-```python
-from summarizer import Summarizer
-
-body = 'Text body that you want to summarize with BERT'
-body2 = 'Something else you want to summarize with BERT'
-model = Summarizer()
-model(body)
-model(body2)
-```
-
-#### Simple Example with coreference
-```python
-from summarizer import Summarizer
-from summarizer.coreference_handler import CoreferenceHandler
-
-handler = CoreferenceHandler(greedyness=.4)
-# How coreference works:
-# >>>handler.process('''My sister has a dog. She loves him.''', min_length=2)
-# ['My sister has a dog.', 'My sister loves a dog.']
-
-body = 'Text body that you want to summarize with BERT'
-body2 = 'Something else you want to summarize with BERT'
-model = Summarizer(sentence_handler=handler)
-model(body)
-model(body2)
-```
-
-#### Simple Example with custom model (we alwsys have to set output_hidden_states=True in model config)
-```python
-from transformers import *
-
-# Load model, model config and tokenizer via Transformers
-custom_config = AutoConfig.from_pretrained('allenai/scibert_scivocab_uncased')
-custom_config.output_hidden_states=True
-custom_tokenizer = AutoTokenizer.from_pretrained('allenai/scibert_scivocab_uncased')
-custom_model = AutoModel.from_pretrained('allenai/scibert_scivocab_uncased', config=custom_config)
-
-from summarizer import Summarizer
-
-body = 'Text body that you want to summarize with BERT'
-body2 = 'Something else you want to summarize with BERT'
-model = Summarizer(custom_model=custom_model, custom_tokenizer=custom_tokenizer)
-model(body)
-model(body2)
-```
-
-#### Large Example
-
-```python
-from summarizer import Summarizer
-
-body = '''
-The Chrysler Building, the famous art deco New York skyscraper, will be sold for a small fraction of its previous sales price.
-The deal, first reported by The Real Deal, was for $150 million, according to a source familiar with the deal.
-Mubadala, an Abu Dhabi investment fund, purchased 90% of the building for $800 million in 2008.
-Real estate firm Tishman Speyer had owned the other 10%.
-The buyer is RFR Holding, a New York real estate company.
-Officials with Tishman and RFR did not immediately respond to a request for comments.
-It's unclear when the deal will close.
-The building sold fairly quickly after being publicly placed on the market only two months ago.
-The sale was handled by CBRE Group.
-The incentive to sell the building at such a huge loss was due to the soaring rent the owners pay to Cooper Union, a New York college, for the land under the building.
-The rent is rising from $7.75 million last year to $32.5 million this year to $41 million in 2028.
-Meantime, rents in the building itself are not rising nearly that fast.
-While the building is an iconic landmark in the New York skyline, it is competing against newer office towers with large floor-to-ceiling windows and all the modern amenities.
-Still the building is among the best known in the city, even to people who have never been to New York.
-It is famous for its triangle-shaped, vaulted windows worked into the stylized crown, along with its distinctive eagle gargoyles near the top.
-It has been featured prominently in many films, including Men in Black 3, Spider-Man, Armageddon, Two Weeks Notice and Independence Day.
-The previous sale took place just before the 2008 financial meltdown led to a plunge in real estate prices.
-Still there have been a number of high profile skyscrapers purchased for top dollar in recent years, including the Waldorf Astoria hotel, which Chinese firm Anbang Insurance purchased in 2016 for nearly $2 billion, and the Willis Tower in Chicago, which was formerly known as Sears Tower, once the world's tallest.
-Blackstone Group (BX) bought it for $1.3 billion 2015.
-The Chrysler Building was the headquarters of the American automaker until 1953, but it was named for and owned by Chrysler chief Walter Chrysler, not the company itself.
-Walter Chrysler had set out to build the tallest building in the world, a competition at that time with another Manhattan skyscraper under construction at 40 Wall Street at the south end of Manhattan. He kept secret the plans for the spire that would grace the top of the building, building it inside the structure and out of view of the public until 40 Wall Street was complete.
-Once the competitor could rise no higher, the spire of the Chrysler building was raised into view, giving it the title.
-'''
-
-model = Summarizer()
-result = model(body, min_length=60)
-full = ''.join(result)
-print(full)
-"""
-The Chrysler Building, the famous art deco New York skyscraper, will be sold for a small fraction of its previous sales price. 
-The building sold fairly quickly after being publicly placed on the market only two months ago.
-The incentive to sell the building at such a huge loss was due to the soaring rent the owners pay to Cooper Union, a New York college, for the land under the building.'
-Still the building is among the best known in the city, even to people who have never been to New York.
-"""
-```
-
-## Summarizer Options
-
-```
-model = Summarizer(
-    model: str #This gets used by the hugging face bert library to load the model, you can supply a custom trained model here
-    hidden: int # Needs to be negative, but allows you to pick which layer you want the embeddings to come from.
-    custom_model: Custom model can be supplied here,
-    custom_tokenizer: Custom tokenizer can be supplied here,
-    reduce_option: str # It can be 'mean', 'median', or 'max'. This reduces the embedding layer for pooling.
-    greedyness: float # number between 0 and 1. It is used for the coreference model. Anywhere from 0.35 to 0.45 seems to work well.
-    sentence_handler: The handler to process sentences. If want to use coreference, instantiate and pass CoreferenceHandler instance
-)
-
-model(
-    body: str # The string body that you want to summarize
-    ratio: float # The ratio of sentences that you want for the final summary
-    min_length: int # Parameter to specify to remove sentences that are less than 40 characters
-    max_length: int # Parameter to specify to remove sentences greater than the max length
-)
-```
-
-## Running the Service
-
-There is a provided flask service and corresponding Dockerfile. Running the service is simple, and can be done though 
-the Makefile with the two commands:
-
-```
-make docker-service-build
-make docker-service-run
-```
-
-This will use the Bert-base-uncased model, which has a small representation. The docker run also accepts a variety of 
-arguments for custom and different models. This can be done through a command such as:
-
-```
-docker build -t summary-service -f Dockerfile.service ./
-docker run --rm -it -p 5000:5000 summary-service:latest -model bert-large-uncased
-```
-
-Other arguments can also be passed to the server. Below includes the list of available arguments.
-
-* -greediness: Float parameter that determines how greedy nueralcoref should be
-* -reduce: Determines the reduction statistic of the encoding layer (mean, median, max).
-* -hidden: Determines the hidden layer to use for embeddings (default is -2)
-* -port: Determines the port to use.
-* -host: Determines the host to use.
-
-Once the service is running, you can make a summarization command at the `http://localhost:5000/summarize` endpoint. 
-This endpoint accepts a text/plain input which represents the text that you want to summarize. Parameters can also be 
-passed as request arguments. The accepted arguments are:
-
-* ratio: Ratio of sentences to summarize to from the original body. (default to 0.2)
-* min_length: The minimum length to accept as a sentence. (default to 25)
-* max_length: The maximum length to accept as a sentence. (default to 500)
-
-An example of a request is the following:
-
-```
-POST http://localhost:5000/summarize?ratio=0.1
-
-Content-type: text/plain
-
-Body:
-The Chrysler Building, the famous art deco New York skyscraper, will be sold for a small fraction of its previous sales price.
-The deal, first reported by The Real Deal, was for $150 million, according to a source familiar with the deal.
-Mubadala, an Abu Dhabi investment fund, purchased 90% of the building for $800 million in 2008.
-Real estate firm Tishman Speyer had owned the other 10%.
-The buyer is RFR Holding, a New York real estate company.
-Officials with Tishman and RFR did not immediately respond to a request for comments.
-It's unclear when the deal will close.
-The building sold fairly quickly after being publicly placed on the market only two months ago.
-The sale was handled by CBRE Group.
-The incentive to sell the building at such a huge loss was due to the soaring rent the owners pay to Cooper Union, a New York college, for the land under the building.
-The rent is rising from $7.75 million last year to $32.5 million this year to $41 million in 2028.
-Meantime, rents in the building itself are not rising nearly that fast.
-While the building is an iconic landmark in the New York skyline, it is competing against newer office towers with large floor-to-ceiling windows and all the modern amenities.
-Still the building is among the best known in the city, even to people who have never been to New York.
-It is famous for its triangle-shaped, vaulted windows worked into the stylized crown, along with its distinctive eagle gargoyles near the top.
-It has been featured prominently in many films, including Men in Black 3, Spider-Man, Armageddon, Two Weeks Notice and Independence Day.
-The previous sale took place just before the 2008 financial meltdown led to a plunge in real estate prices.
-Still there have been a number of high profile skyscrapers purchased for top dollar in recent years, including the Waldorf Astoria hotel, which Chinese firm Anbang Insurance purchased in 2016 for nearly $2 billion, and the Willis Tower in Chicago, which was formerly known as Sears Tower, once the world's tallest.
-Blackstone Group (BX) bought it for $1.3 billion 2015.
-The Chrysler Building was the headquarters of the American automaker until 1953, but it was named for and owned by Chrysler chief Walter Chrysler, not the company itself.
-Walter Chrysler had set out to build the tallest building in the world, a competition at that time with another Manhattan skyscraper under construction at 40 Wall Street at the south end of Manhattan. He kept secret the plans for the spire that would grace the top of the building, building it inside the structure and out of view of the public until 40 Wall Street was complete.
-Once the competitor could rise no higher, the spire of the Chrysler building was raised into view, giving it the title.
-
-Response:
-
-{
-    "summary": "The Chrysler Building, the famous art deco New York skyscraper, will be sold for a small fraction of its previous sales price. The buyer is RFR Holding, a New York real estate company. The incentive to sell the building at such a huge loss was due to the soaring rent the owners pay to Cooper Union, a New York college, for the land under the building."
-}
-```
+Of course the summaries won't be perferct, thats where you can read more about the BERT algorithm and read the configs on the main repo. Happy MLing :)
