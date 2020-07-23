@@ -47,7 +47,7 @@ Fly.io has great [docs](https://fly.io/docs/) so please have a look. You can run
 1. After like 1 minute try `flyctl status` to see if it is running with a 2 GB memory instance, something like below should be visible:
     ![Flyctl status output for bert-executive-summarizer](imgs/06fly-status.png?raw=true)
 1. Now lets do `flyctl open` to see if it is running. The browser shows `Hello World!` now which is a good sign.
-1. To try out a summarization run the following Curl:
+1. To try out a summarization run the following Curl, replace the URL with your service's URL:
     ````
     curl -X POST -H "Content-Type: text/plain" \
     --data "Fly is a platform for applications that need to run globally. \
