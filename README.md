@@ -95,5 +95,11 @@ Fly.io has great [docs](https://fly.io/docs/) so please have a look. You can run
     ````
     {"summary":"Fly is a platform for applications that need to run globally. Being location smart, agile over time and clever with the cloud allows us to build a deployment platform that lets you reap the benefits of lower latency for your users wherever they are. This is nothing like a container in the real world. There you create instances of your application at every location where you want low latency. Then, as demand grows, you'll end up scaling-up each location because scaling down is tricky and would involve a lot of automation."}
     ````
-1. So we just summarized the fly.io main doc page to 10% (0.1 ratio) with the BERT based summarizer.
+1. So we just summarized the fly.io main doc page content to 10% (0.1 ratio) with the BERT based summarizer.
 1. Hope you liked it!
+
+## Endless Possibilites
+
+The possibilities for this text summarizer are endless, you could potentlially build a news summarizer app that takes all the COVID-19 news and gives out a concise digest to your readers. Everyone doesn't like reading long texts so summarizing it to 10% or 20% will save a lot of time.
+
+Of course the summaries won't be perferct, thats where you can read more about the BERT algorithm and read the configs on the main repo. Happy MLing :)
