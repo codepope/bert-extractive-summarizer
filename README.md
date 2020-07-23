@@ -30,7 +30,7 @@ Fly.io has great [docs](https://fly.io/docs/) so please have a look. You can run
 1. Clone this repo with `git@github.com:geshan/bert-extractive-summarizer.git`
 1. Then run `cd bert-extractive-summarizer`
 1. Now the fun begins, execute `flyctl init`
-1. Then type in a name for example: `text-summarizer`
+1. Then type in a name for example: `text-summarizer`, if it is taken try a different name re-running `flyctl init`.
 1. Subsequently select the org, generally it will be your firstname-lastname
 1. After that, select `Dockerfile` as the builder
 1. It should create a fly.toml file at the project root now. Here is a screenshot of my output:
