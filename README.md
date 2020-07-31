@@ -1,29 +1,12 @@
-# Bert Extractive Summarizer
+# Bert Extractive Summarizer on Fly.io
 
-[![Build Status](https://travis-ci.com/dmmiller612/bert-extractive-summarizer.svg?branch=master)](https://travis-ci.com/github/dmmiller612/bert-extractive-summarizer)
-[![license](https://img.shields.io/github/license/mashape/apistatus.svg?maxAge=2592000)](https://github.com/dmmiller612/bert-extractive-summarizer)
-<img src="https://img.shields.io/pypi/v/bert-extractive-summarizer.svg" />
+I am not a Machine Learning (ML) enthusiast yet, but I was digging into the subject when I discovered the [Bert executive summarizer](https://github.com/dmmiller612/bert-extractive-summarizer) which is open source summarizer. I wanted to do a quick deploy with it onto a service and start experimenting with text summarization. For the service I have chosen Fly.io which deploys apps closer to the user so that it responds much faster.
 
-This repo is the generalization of the lecture-summarizer repo. This tool utilizes the HuggingFace Pytorch transformers library
-to run extractive summarizations. This works by first embedding the sentences, then running a clustering algorithm, finding 
-the sentences that are closest to the cluster's centroids. This library also uses coreference techniques, utilizing the 
-https://github.com/huggingface/neuralcoref library to resolve words in summaries that need more context. The greedyness of 
-the neuralcoref library can be tweaked in the CoreferenceHandler class.
-
-Paper: https://arxiv.org/abs/1906.04165
-
-## Rest of the original readme
-
-This is fork of (dmmiller612/bert-extractive-summarizer)
-[https://github.com/dmmiller612/bert-extractive-summarizer], the original readme can be read in the main repo.
-
-## Aim of this fork
-
-I am not a Machine Learning (ML) enthusiast yet :), so as the original repo had a docker file I wanted to do a quick deploy it on a service and get some text summaries working. For that I have chosen [Fly.io](https://fly.io) which deploys apps closer to the user so that it responds much faster.
+Let's look at the summarizer we will be deploying in more detail.
 
 ## Running this summarizer API on Fly.io
 
-Fly.io has great [docs](https://fly.io/docs/) so please have a look. You can run this text summarizer on fly.io with the following steps:
+Fly.io has great [docs](https://fly.io/docs/) so please have a look. You can run this text summarizer on fly.io following the steps below:
 
 1. [Install](https://fly.io/docs/getting-started/installing-flyctl/) the flyctl CLI command
 1. Register on fly with `flyctl auth signup` , if you already have a fly account login with `flyctl auth login`
@@ -100,6 +83,6 @@ Fly.io has great [docs](https://fly.io/docs/) so please have a look. You can run
 
 ## Endless Possibilites
 
-The possibilities for this text summarizer are endless, you could potentlially build a news summarizer app that takes all the COVID-19 news and gives out a concise digest to your readers. Everyone doesn't like reading long texts so summarizing it to 10% or 20% will save a lot of time.
+The possibilities for this text summarizer are endless, you could potentlially build a news summarizer app that takes all the COVID-19 news and gives out a concise digest to your readers. Everyone doesn't like reading long texts so summarizing it to 10% or 20% will save a lot of time for the reader without missing important information.
 
-Of course the summaries won't be perferct, thats where you can read more about the BERT algorithm and read the configs on the main repo. Happy MLing :)
+Of course the summaries won't be perferct, thats where you can read more about the BERT algorithm and read the configs on the [main repo](https://github.com/dmmiller612/bert-extractive-summarizer). Happy MLing :)
