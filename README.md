@@ -4,7 +4,7 @@ I am not a Machine Learning (ML) enthusiast yet, but I was digging into the subj
 
 Let's look at the summarizer we will be deploying in more detail.
 
-## Running this summarizer API on Fly.io
+## Running the summarizer API on Fly.io
 
 Fly.io has great [docs](https://fly.io/docs/) so please have a look. You can run this text summarizer on fly.io following the steps below:
 
@@ -86,7 +86,7 @@ Fly.io has great [docs](https://fly.io/docs/) so please have a look. You can run
 1. So we just summarized the fly.io main doc page content to 10% (0.1 ratio) with the BERT based summarizer.
 1. Hope you liked it!
 
-## Endless Possibilites
+## Endless possibilites
 
 The possibilities for this text summarizer are endless, you could potentlially build a news summarizer app that takes all the COVID-19 news and gives out a concise digest to your readers. Everyone doesn't like reading long texts so summarizing it to 10% or 20% will save a lot of time for the reader without missing important information.
 
