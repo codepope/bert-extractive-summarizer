@@ -1,6 +1,6 @@
 # Bert Extractive Summarizer on Fly.io
 
-I am not a Machine Learning (ML) enthusiast yet, but I was digging into the subject when I discovered the [Bert executive summarizer](https://github.com/dmmiller612/bert-extractive-summarizer) which is open source summarizer. I wanted to do a quick deploy with it onto a service and start experimenting with text summarization. For the service I have chosen Fly.io which deploys apps closer to the user so that it responds much faster.
+I am not a Machine Learning (ML) enthusiast yet, but I was digging into the subject when I discovered the [Bert executive summarizer](https://github.com/dmmiller612/bert-extractive-summarizer) which is an open source summarizer. I wanted to do a quick deploy with it onto a service and start experimenting with text summarization. For the service I have chosen Fly.io which deploys apps closer to the user so that it responds much faster.
 
 Let's look at the summarizer we will be deploying in more detail.
 
@@ -8,11 +8,16 @@ Let's look at the summarizer we will be deploying in more detail.
 
 Fly.io has great [docs](https://fly.io/docs/) so please have a look. You can run this text summarizer on fly.io following the steps below:
 
+### Prerequisites
+
 1. [Install](https://fly.io/docs/getting-started/installing-flyctl/) the flyctl CLI command
 1. Register on fly with `flyctl auth signup` , if you already have a fly account login with `flyctl auth login`
-1. Clone this repo with `git@github.com:geshan/bert-extractive-summarizer.git`
+
+### Steps
+
+1. Clone this repo with `git@github.com:geshan/bert-extractive-summarizer.git` if you are logged in with SSH support enabled. Otherwise try `git clone https://github.com/geshan/bert-extractive-summarizer.git`.
 1. Then run `cd bert-extractive-summarizer`
-1. Now the fun begins, execute `flyctl init`
+1. Now the fun begins, execute `flyctl init `
 1. Then type in a name for example: `text-summarizer`, if it is taken try a different name re-running `flyctl init`.
 1. Subsequently select the org, generally it will be your firstname-lastname
 1. After that, select `Dockerfile` as the builder
