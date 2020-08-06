@@ -6,7 +6,7 @@ Let's look at the summarizer we will be deploying in more detail.
 
 ## Running the summarizer API on Fly.io
 
-Fly.io has great [docs](https://fly.io/docs/) so please have a look. You can run this text summarizer on fly.io following the steps below:
+You can run this text summarizer on fly.io following the steps below:
 
 ### Prerequisites
 
