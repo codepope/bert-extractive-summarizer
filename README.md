@@ -20,15 +20,14 @@ You can run this text summarizer on fly.io following the steps below:
 1. Now the fun begins, execute `flyctl init `
 1. Then type in a name for example: `text-summarizer`, if it is taken try a different name re-running `flyctl init`.
 1. Subsequently select the org, generally it will be your firstname-lastname
-1. After that, select `Dockerfile` as the builder
-1. Lets get a bit more into it, run `flyctl deploy --dockerfile Dockerfile.service` -- probably time to make a coffee now as pulling the docker [image](https://hub.docker.com/r/geshan/bert-extractive-summarizer) (which is 3.5 GB), building it a bit more and pushing it to fly container registry then deploying it is going to take some time. Here is a screenshot of the deploy output:
-1. 1 instance is unhealthy, and that is expected as of now. It is happening because of low resources (512 MB memory).
+1. Lets get a bit more into it, run `flyctl deploy --dockerfile Dockerfile.service` -- time to make a coffee now as pulling the docker [image](https://hub.docker.com/r/geshan/bert-extractive-summarizer) (which is 3.5 GB), building it a bit more and pushing it to fly container registry then deploying it is going to take some time.
+1. When the service is deployed, you will see 1 instance is unhealthy, and that is expected as of now. It is happening because of low resources (512 MB memory).
 1. Then you can try `flyctl info` to see the info, and try `flyctl status` to see if it is running. My experience was the default 512 MB memory was not enough.
-1. This is where it gets more interesing, now the resources have to be beefed up to make it run. Lets see what is allocated by default, to do it run `flyctl scale show` and what VM options are available with `flyctl platform vm-sizes`
-1. To use a more powerful VM with 2 GB memory and 2 CPU run this command `flyctl scale vm cpu2mem2`, at least a 2 GB memory was required from my experience
-1. After like 1 minute try `flyctl status` to see if it is running with a 2 GB memory instance, something like below should be visible:
-1. Now lets do `flyctl open` to see if it is running. The browser shows `Hello World!` now which is a good sign.
-1. To try out a summarization run the following Curl, replace the URL with your service's URL:
+1. This is where it gets interesing, now the resources have to be beefed up to make it run. Let's see what is allocated by default, to know it run `flyctl scale show`. To find out the VM options available run `flyctl platform vm-sizes`
+1. We need a more powerful VM, the one with 2 GB memory and 2 CPU run. To upgrade to this VM, execute `flyctl scale vm cpu2mem2`. At least a 2 GB memory was required for the summarizer to run properly.
+1. After like a minute, try `flyctl status` to see if it is running with a 2 GB memory VM, you should see that it has a bigger VM running now.
+1. Lets do `flyctl open` to see if it is running. The browser shows `Hello World!`, it is a good sign.
+1. To try out a summarization run the following cURL, replace the URL with your service's URL:
     ````
     curl -X POST -H "Content-Type: text/plain" \
     --data "Fly is a platform for applications that need to run globally. \
@@ -83,4 +82,4 @@ You can run this text summarizer on fly.io following the steps below:
 
 The possibilities for this text summarizer are endless, you could potentlially build a news summarizer app that takes all the COVID-19 news and gives out a concise digest to your readers. Everyone doesn't like reading long texts so summarizing it to 10% or 20% will save a lot of time for the reader without missing important information.
 
-Of course the summaries won't be perferct, thats where you can read more about the BERT algorithm and read the configs on the [main repo](https://github.com/dmmiller612/bert-extractive-summarizer). Happy MLing :)
+Of course the summaries won't be perferct, thats where you can read more about the BERT algorithm and read the configs on the [main repo](https://github.com/dmmiller612/bert-extractive-summarizer).
